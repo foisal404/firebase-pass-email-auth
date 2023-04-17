@@ -1,0 +1,10 @@
+.btnposition{
+    position: absolute;
+    top: 228px;
+    left: 940px;
+
+}
+.btnsize{
+    height: 20px;
+    max-width: 15px;
+}
