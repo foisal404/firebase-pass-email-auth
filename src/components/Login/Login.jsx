@@ -1,15 +1,30 @@
 import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { EyeIcon,EyeSlashIcon } from '@heroicons/react/24/solid'
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import './Login.css'
+import { app } from '../../firebase/firebase.config';
 
 const Login = () => {
+    const auth = getAuth(app);
     const emailRef=useRef();
     const [hasmail,setHasmail]=useState(true)
     const [hide,setHide]=useState(true)
     const handlerFormSubmit=(event)=>{
         event.preventDefault();
         console.log('submit');
+        const email=event.target.email.value;
+        const password=event.target.password.value;
+        // console.log(email,password);
+        signInWithEmailAndPassword(auth,email,password)
+        .then(result=>{
+            const loggedUser=result.user;
+            console.log(loggedUser);
+        })
+        .catch(error=>{
+            console.error(error.message)
+        })
+
     }
     const handlerForgetPassword=()=>{
         setHasmail(true)
