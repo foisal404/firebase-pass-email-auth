@@ -1,21 +1,28 @@
 import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { EyeIcon,EyeSlashIcon } from '@heroicons/react/24/solid'
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
 import './Login.css'
 import { app } from '../../firebase/firebase.config';
 
 const Login = () => {
     const auth = getAuth(app);
+
     const emailRef=useRef();
+
+    const [error,setError]=useState('')
     const [hasmail,setHasmail]=useState(true)
     const [hide,setHide]=useState(true)
+
     const handlerFormSubmit=(event)=>{
+        setError('')
         event.preventDefault();
         console.log('submit');
         const email=event.target.email.value;
         const password=event.target.password.value;
         // console.log(email,password);
+
+        
         signInWithEmailAndPassword(auth,email,password)
         .then(result=>{
             const loggedUser=result.user;
@@ -23,15 +30,25 @@ const Login = () => {
         })
         .catch(error=>{
             console.error(error.message)
+            setError(error.message)
         })
 
     }
     const handlerForgetPassword=()=>{
+        setError('')
         setHasmail(true)
         if(!emailRef.current.value){
             setHasmail(false)
             return
         }
+        const email=emailRef.current.value;
+        sendPasswordResetEmail(auth,email)
+        .then(()=>{
+            console.log("password resend mail send")
+        })
+        .catch(error=>{
+            console.log(error.message);
+        })
 
         
         // console.log(emailRef.current.value);
@@ -55,7 +72,8 @@ const Login = () => {
             </form>
             
             
-            <p className='text-danger text-center'>{!hasmail && 'no mail details'}</p>
+            <p className='text-danger text-center'>{!hasmail && 'no mail details please enter mail'}</p>
+            <p className='text-danger text-center'>{error}</p>
             
             
             

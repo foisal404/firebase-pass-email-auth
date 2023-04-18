@@ -36,7 +36,6 @@ const Register = () => {
         })
         .catch(error=>{
             console.error(error)
-            console.log(error);
         })
     }
     const profileUpdate=(user,name)=>{
