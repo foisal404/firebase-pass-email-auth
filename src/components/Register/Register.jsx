@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { EyeIcon,EyeSlashIcon } from '@heroicons/react/24/solid'
 import './Register.css'
-import { createUserWithEmailAndPassword, getAuth, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, updateProfile } from "firebase/auth";
 import { app } from '../../firebase/firebase.config';
 import { Link } from 'react-router-dom';
 
@@ -22,11 +22,22 @@ const Register = () => {
             .then(result=>{
                 const loggedUser=result.user;
                 console.log(loggedUser);
+                sendVerificationMail(loggedUser)
                 profileUpdate(loggedUser,displayname)
             })
             .catch(error=>{
                 console.error(error.message)
             })
+    }
+    const sendVerificationMail=(user)=>{
+        sendEmailVerification(user)
+        .then(()=>{
+            console.log("Email Send Successfully");
+        })
+        .catch(error=>{
+            console.error(error)
+            console.log(error);
+        })
     }
     const profileUpdate=(user,name)=>{
         updateProfile(user,{
